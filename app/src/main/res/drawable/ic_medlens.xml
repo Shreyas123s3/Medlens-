@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+  <group android:name="magnifier" android:pivotX="24" android:pivotY="24">
+    <path android:fillColor="#1769AA" android:pathData="M20,4a16,16 0,1 0,0 32a16,16 0,1 0,0 -32M20,8a12,12 0,1 1,0 24a12,12 0,1 1,0 -24" android:fillType="evenOdd" />
+    <path android:fillColor="#1769AA" android:pathData="M31,29l3,-3l12,12l-3,3z" />
+    <path android:fillColor="#23B8A6" android:pathData="M18,12h4v6h6v4h-6v6h-4v-6h-6v-4h6z" />
+    <group android:rotation="35" android:pivotX="36.5" android:pivotY="9">
+      <path android:fillColor="#23B8A6" android:pathData="M32,7h9v4h-9z" />
+    </group>
+  </group>
+</vector>

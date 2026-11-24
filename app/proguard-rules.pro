@@ -1,0 +1,14 @@
+# Gson maps bundled medicine assets and Retrofit JSON to these model property names.
+-keepattributes Signature,*Annotation*,InnerClasses,EnclosingMethod
+-keep class com.google.gson.** { *; }
+-keep class com.medlens.app.data.** { *; }
+-keep class com.medlens.app.assistant.AiChatRequest { *; }
+-keep class com.medlens.app.assistant.AiChatResponse { *; }
+-keep class com.medlens.app.assistant.AiMedicineFact { *; }
+-keep class com.medlens.app.assistant.AiSummary { *; }
+-keep class com.medlens.app.assistant.AiTurn { *; }
+-keep class com.medlens.app.data.OpenFdaApi { *; }
+-keep class com.medlens.app.data.OpenFdaResponse { *; }
+-keep class com.medlens.app.data.OpenFdaRecord { *; }
+-keep class com.medlens.app.data.OpenFdaMetadata { *; }
+-keep class kotlin.Metadata { *; }

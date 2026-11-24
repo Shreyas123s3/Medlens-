@@ -1,0 +1,9 @@
+{
+  "name": "medlens-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "build": "tsc --noEmit", "test": "node --test --import tsx src/*.test.ts" },
+  "dependencies": { "@google/genai": "^1.43.0", "zod": "^4.1.12" },
+  "devDependencies": { "@types/node": "^22.19.3", "tsx": "^4.20.6", "typescript": "^5.9.3" }
+}

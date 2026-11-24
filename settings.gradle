@@ -1,0 +1,15 @@
+pluginManagement {
+    repositories { google(); mavenCentral(); gradlePluginPortal() }
+    // Kotlin 2.4 emits metadata newer than the R8 bundled in AGP 8.13.2.
+    // Android's R8 guide documents this classpath override for AGP <= 9.2.
+    buildscript {
+        repositories { google(); mavenCentral() }
+        dependencies { classpath 'com.android.tools:r8:9.4.14' }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories { google(); mavenCentral() }
+}
+rootProject.name = 'MedLens'
+include ':app'

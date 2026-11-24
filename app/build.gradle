@@ -1,0 +1,86 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
+    id 'com.google.devtools.ksp'
+}
+
+android {
+    namespace 'com.medlens.app'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.medlens.app'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+        def backendUrl = providers.gradleProperty('medlensBackendUrl')
+                .orElse(providers.environmentVariable('MEDLENS_BACKEND_URL')).getOrElse('')
+        def escapedBackendUrl = backendUrl.replace('\\', '\\\\').replace('"', '\\"')
+        buildConfigField 'String', 'BACKEND_URL', '"' + escapedBackendUrl + '"'
+    }
+    signingConfigs {
+        release {
+            def releaseStorePath = System.getenv('MEDLENS_KEYSTORE_PATH')
+            def releaseStorePassword = System.getenv('MEDLENS_KEYSTORE_PASSWORD')
+            def releaseKeyAlias = System.getenv('MEDLENS_KEY_ALIAS')
+            def releaseKeyPassword = System.getenv('MEDLENS_KEY_PASSWORD')
+            if (releaseStorePath && releaseStorePassword && releaseKeyAlias && releaseKeyPassword) {
+                storeFile file(releaseStorePath)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+    buildTypes {
+        debug { }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (System.getenv('MEDLENS_KEYSTORE_PATH')) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+    buildFeatures {
+        buildConfig true
+        compose true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+dependencies {
+    // Keep UI artifacts compatible with AGP 8.13 / compileSdk 36.
+    def composeBom = platform('androidx.compose:compose-bom:2025.12.00')
+    implementation composeBom
+    implementation 'androidx.activity:activity-compose:1.12.2'
+    implementation 'androidx.core:core-splashscreen:1.2.0'
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material:material-icons-core'
+    implementation 'androidx.compose.foundation:foundation'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.navigation:navigation-compose:2.9.6'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.10.0'
+    implementation 'androidx.datastore:datastore-preferences:1.2.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+    implementation 'androidx.room:room-runtime:2.8.5'
+    ksp 'androidx.room:room-compiler:2.8.5'
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    testImplementation 'junit:junit:4.13.2'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+}
