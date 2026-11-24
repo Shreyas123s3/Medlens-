@@ -83,6 +83,7 @@ jobs:
           retention-days: 14
 
       - name: Configure release signing key
+        id: signing
         shell: bash
         env:
           MEDLENS_KEYSTORE_BASE64: ${{ secrets.MEDLENS_KEYSTORE_BASE64 }}
@@ -92,15 +93,18 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "$MEDLENS_KEYSTORE_BASE64" || -z "$MEDLENS_KEYSTORE_PASSWORD" || -z "$MEDLENS_KEY_ALIAS" || -z "$MEDLENS_KEY_PASSWORD" ]]; then
-            echo "::error::Release signing secrets are missing. Follow README.md to create a release keystore and add all four GitHub Actions secrets. The debug APK artifact is already available."
-            exit 1
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Release signing secrets are not configured. Skipping the optional signed release; the debug APK artifact has been uploaded."
+            exit 0
           fi
           keystore_path="$RUNNER_TEMP/medlens-release.jks"
           printf '%s' "$MEDLENS_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
           test -s "$keystore_path"
           echo "MEDLENS_KEYSTORE_PATH=$keystore_path" >> "$GITHUB_ENV"
+          echo "configured=true" >> "$GITHUB_OUTPUT"
 
       - name: Build minified signed release APK
+        if: steps.signing.outputs.configured == 'true'
         working-directory: ${{ steps.project.outputs.root }}
         env:
           MEDLENS_BACKEND_URL: ${{ vars.MEDLENS_BACKEND_URL }}
@@ -110,6 +114,7 @@ jobs:
         run: gradle assembleRelease --stacktrace --no-daemon
 
       - name: Upload signed release APK
+        if: steps.signing.outputs.configured == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: MedLens-release-apk
